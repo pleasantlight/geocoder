@@ -4,11 +4,19 @@ module Geocoder
   if defined? Rails::Railtie
     require 'rails'
     class Railtie < Rails::Railtie
+
       initializer 'geocoder.insert_into_active_record' do
         ActiveSupport.on_load :active_record do
           Geocoder::Railtie.insert_into_active_record
         end
       end
+
+      initializer 'geocoder.insert_into_mongoid' do
+        ActiveSupport.on_load :mongoid do
+          Geocoder::Railtie.insert_into_mongoid
+        end
+      end
+
       rake_tasks do
         load "tasks/geocoder.rake"
       end
@@ -16,14 +24,27 @@ module Geocoder
   end
 
   class Railtie
-    def self.insert_into_active_record
 
-      return unless defined?(::ActiveRecord)
+    def self.insert_into_active_record
+      if defined?(::ActiveRecord::Base)
+        Geocoder::Railtie.insert(::ActiveRecord::Base)
+      end
+    end
+
+    def self.insert_into_mongoid
+      if defined?(::Mongoid::Document)
+        Geocoder::Railtie.insert(::Mongoid::Document)
+      end
+    end
+
+    def self.insert(target)
+
+      return unless defined?(target)
 
       ##
-      # Add methods to ActiveRecord::Base so Geocoder is accessible by models.
+      # Add methods to target so Geocoder is accessible by models.
       #
-      ::ActiveRecord::Base.class_eval do
+      target.class_eval do
 
         ##
         # Set attribute names and include the Geocoder module.
@@ -54,12 +75,20 @@ module Geocoder
           end
           self.geocoder_options = options
           unless _geocoder_initialized?
-            include Geocoder::ActiveRecord
+            include _geocoder_driver
           end
         end
 
         def self._geocoder_initialized?
-          included_modules.include? Geocoder::ActiveRecord
+          included_modules.include? _geocoder_driver
+        end
+
+        def self._geocoder_driver
+          if defined?(::ActiveRecord::Base) and ancestors.include?(::ActiveRecord::Base)
+            Geocoder::ActiveRecord
+          elsif defined?(::Mongoid::Document) and included_modules.include?(::Mongoid::Document)
+            Geocoder::Mongoid
+          end
         end
       end
 

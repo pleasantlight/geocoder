@@ -21,3 +21,4 @@ module Geocoder
 end
 
 Geocoder::Railtie.insert_into_active_record
+Geocoder::Railtie.insert_into_mongoid
