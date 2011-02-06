@@ -6,7 +6,7 @@ module Geocoder
     class Railtie < Rails::Railtie
       initializer 'geocoder.insert_into_active_record' do
         ActiveSupport.on_load :active_record do
-          Geocoder::Railtie.insert
+          Geocoder::Railtie.insert_into_active_record
         end
       end
       rake_tasks do
@@ -16,7 +16,7 @@ module Geocoder
   end
 
   class Railtie
-    def self.insert
+    def self.insert_into_active_record
 
       return unless defined?(::ActiveRecord)
 

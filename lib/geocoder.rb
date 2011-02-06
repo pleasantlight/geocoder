@@ -20,4 +20,4 @@ module Geocoder
   class ConfigurationError < Error; end
 end
 
-Geocoder::Railtie.insert
+Geocoder::Railtie.insert_into_active_record
