@@ -1,6 +1,7 @@
 module Geocoder
   class Configuration
     cattr_accessor :timeout
+    cattr_accessor :waze_api_key
   end
 end
 
