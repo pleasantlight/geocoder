@@ -190,6 +190,9 @@ module Geocoder
           "a method which provides an address for the object."
       end
       coords = Geocoder::Lookup.coordinates(send(address_method))
+      
+      puts "Geocoder::Lookup.coordinates returned: #{coords}"
+      
       unless coords.blank?
         method = (save ? "update" : "write") + "_attribute"
         send method, self.class.geocoder_options[:latitude],  coords[0]
