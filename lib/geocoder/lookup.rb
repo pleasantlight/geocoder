@@ -50,20 +50,21 @@ module Geocoder
       begin
         doc = ActiveSupport::JSON.decode(fetch_data(query, reverse))
       rescue SocketError
-        warn "Google Geocoding API connection cannot be established."
+        warn "Geocoding API connection cannot be established."
       rescue TimeoutError
-        warn "Google Geocoding API not responding fast enough " +
+        warn "Geocoding API not responding fast enough " +
           "(see Geocoder::Configuration.timeout to set limit)."
       end
 
       case doc['status']; when "OK"
+        puts "#{doc}"
         doc
       when "OVER_QUERY_LIMIT"
-        warn "Google Geocoding API error: over query limit."
+        warn "Geocoding API error: over query limit."
       when "REQUEST_DENIED"
-        warn "Google Geocoding API error: request denied."
+        warn "Geocoding API error: request denied."
       when "INVALID_REQUEST"
-        warn "Google Geocoding API error: invalid request."
+        warn "Geocoding API error: invalid request."
       end
     end
 
@@ -73,6 +74,7 @@ module Geocoder
     def fetch_data(query, reverse = false)
       return nil if query.blank?
       url = query_url(query, reverse)
+      puts "Calling URL: #{url}"
       timeout(Geocoder::Configuration.timeout) do
         Net::HTTP.get_response(URI.parse(url)).body
       end
@@ -83,7 +85,8 @@ module Geocoder
         (reverse ? :latlng : :address) => query,
         :sensor => "false"
       }
-      "http://maps.google.com/maps/api/geocode/json?" + params.to_query
+#      "http://maps.google.com/maps/api/geocode/json?" + params.to_query
+      "http://www.waze.co.il/WAS/mozi?q=#{address}&token=#{Geocoder::Configuration.waze_api_key}"
     end
   end
 end
