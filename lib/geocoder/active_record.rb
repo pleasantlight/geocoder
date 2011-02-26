@@ -191,6 +191,9 @@ module Geocoder
       end
       
       geocoder = self.class.geocoder_options[:geocoder]
+      if geocoder.is_a? Symbol
+        geocoder = send(geocoder)
+      end
       puts "Geocoder = #{geocoder}"
       
       coords = Geocoder::Lookup.coordinates(send(address_method))
