@@ -9,7 +9,7 @@ module Geocoder
     #
     def coordinates(address, geocoder)
       @geocoder = geocoder
-      if (results = search(address, geocoder)).size > 0
+      if (results = search(address)).size > 0
         if @geocoder == :waze
           puts "results = #{results}"
           puts "results.first = #{results.first}"

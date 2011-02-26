@@ -26,9 +26,9 @@ module Geocoder
         # (address string). Location (the first argument) may be either a string
         # to geocode or an array of coordinates (<tt>[lat,long]</tt>).
         #
-        scope :near, lambda{ |location, *args|
+        scope :near, lambda{ |location, geocoder, *args|
           latitude, longitude = location.is_a?(Array) ?
-            location : Geocoder::Lookup.coordinates(location)
+            location : Geocoder::Lookup.coordinates(location, geocoder)
           if latitude and longitude
             near_scope_options(latitude, longitude, *args)
           else
@@ -194,9 +194,8 @@ module Geocoder
       if geocoder.is_a? Symbol
         geocoder = send(geocoder)
       end
-      puts "Geocoder = #{geocoder}"
       
-      coords = Geocoder::Lookup.coordinates(send(address_method))
+      coords = Geocoder::Lookup.coordinates(send(address_method), geocoder)
       
       unless coords.blank?
         method = (save ? "update" : "write") + "_attribute"
