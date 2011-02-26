@@ -189,9 +189,11 @@ module Geocoder
           "You are attempting to fetch coordinates but have not specified " +
           "a method which provides an address for the object."
       end
-      coords = Geocoder::Lookup.coordinates(send(address_method))
       
-      puts "Geocoder::Lookup.coordinates returned: #{coords}"
+      geocoder = self.class.geocoder_options[:geocoder]
+      puts "Geocoder = #{geocoder}"
+      
+      coords = Geocoder::Lookup.coordinates(send(address_method))
       
       unless coords.blank?
         method = (save ? "update" : "write") + "_attribute"
