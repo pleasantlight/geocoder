@@ -8,21 +8,13 @@ module Geocoder
     # Query Google for the coordinates of the given address.
     #
     def coordinates(address, geocoder)
-      puts "geocoder parameter is #{geocoder}"
       @geocoder = geocoder
-      puts "geocoder member is #{@geocoder}"
       if (results = search(address)).size > 0
         if @geocoder == :waze
-          puts "The @geocoder is apparently :waze"
-          puts "results = #{results}"
-          puts "results.first = #{results.first}"
-          puts "results.first['location'] = #{results.first['location']}"
           place = results.first['location']
           ['lat', 'lon'].map{ |i| place[i] }
         else
           # Google Geocoder
-          puts "The @geocoder is apparently :google"
-          puts "found coordinates using Google geocoder"
           place = results.first.geometry['location']
           ['lat', 'lng'].map{ |i| place[i] }
         end
@@ -90,7 +82,6 @@ module Geocoder
         end
       end
       
-      puts "#{doc}"
       doc 
     end
 
@@ -100,7 +91,6 @@ module Geocoder
     def fetch_data(query, reverse = false)
       return nil if query.blank?
       url = query_url(query, reverse)
-      puts "Calling URL: #{url}"
       timeout(Geocoder::Configuration.timeout) do
         Net::HTTP.get_response(URI.parse(url)).body
       end
