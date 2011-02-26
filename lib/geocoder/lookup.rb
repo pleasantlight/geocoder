@@ -38,12 +38,11 @@ module Geocoder
     def search(*args)
       return [] if args[0].blank?
       doc = parsed_response(args.join(","), args.size == 2)
-      [].tap do |results|
-        if doc
-          # doc['results'].each{ |r| results << Result.new(r) }
-          results << doc
-        end
-      end
+      # [].tap do |results|
+      #   if doc
+      #     doc['results'].each{ |r| results << Result.new(r) }
+      #   end
+      # end
     end
 
 
