@@ -16,7 +16,7 @@ module Geocoder
         puts "results.first = #{results.first}"
         puts "results.first['location'] = #{results.first['location']}"
         place = results.first['location']
-        ['lat', 'lng'].map{ |i| place[i] }
+        ['lat', 'lon'].map{ |i| place[i] }
       end
     end
 
