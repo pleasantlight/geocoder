@@ -47,14 +47,16 @@ module Geocoder
     def search(*args)
       return [] if args[0].blank?
       doc = parsed_response(args.join(","), args.size == 2)
-      unless @geocoder == :waze
-        [].tap do |results|
+      if @geocoder == :waze
+        return doc
+      else
+        res = [].tap do |results|
           if doc
             doc['results'].each{ |r| results << Result.new(r) }
           end
         end
+        return res
       end
-      doc
     end
 
 
