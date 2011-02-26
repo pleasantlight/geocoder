@@ -7,16 +7,21 @@ module Geocoder
     ##
     # Query Google for the coordinates of the given address.
     #
-    def coordinates(address)
-      if (results = search(address)).size > 0
-        # place = results.first.geometry['location']
-        # ['latitude', 'longitude'].map{ |i| place[i] }
-
-        puts "results = #{results}"
-        puts "results.first = #{results.first}"
-        puts "results.first['location'] = #{results.first['location']}"
-        place = results.first['location']
-        ['lat', 'lon'].map{ |i| place[i] }
+    def coordinates(address, geocoder)
+      @geocoder = geocoder
+      if (results = search(address, geocoder)).size > 0
+        if @geocoder == :waze
+          puts "results = #{results}"
+          puts "results.first = #{results.first}"
+          puts "results.first['location'] = #{results.first['location']}"
+          place = results.first['location']
+          ['lat', 'lon'].map{ |i| place[i] }
+        else
+          # Google Geocoder
+          puts "found coordinates using Google geocoder"
+          place = results.first.geometry['location']
+          ['lat', 'lng'].map{ |i| place[i] }
+        end
       end
     end
 
@@ -38,11 +43,14 @@ module Geocoder
     def search(*args)
       return [] if args[0].blank?
       doc = parsed_response(args.join(","), args.size == 2)
-      # [].tap do |results|
-      #   if doc
-      #     doc['results'].each{ |r| results << Result.new(r) }
-      #   end
-      # end
+      unless @geocoder = :waze
+        [].tap do |results|
+          if doc
+            doc['results'].each{ |r| results << Result.new(r) }
+          end
+        end
+      end
+      doc
     end
 
 
@@ -62,21 +70,21 @@ module Geocoder
           "(see Geocoder::Configuration.timeout to set limit)."
       end
 
-      puts "#{doc}"
-      doc
- 
-    #   case doc['status']; 
-    #   when "OK"
-    #     puts "#{doc}"
-    #     doc
-    #   when "OVER_QUERY_LIMIT"
-    #     warn "Geocoding API error: over query limit."
-    #   when "REQUEST_DENIED"
-    #     warn "Geocoding API error: request denied."
-    #   when "INVALID_REQUEST"
-    #     warn "Geocoding API error: invalid request."
-    #   end
-    
+      if @geocoder == :waze
+        puts "#{doc}"
+        doc
+      else        
+        case doc['status']; 
+        when "OK"
+          doc
+        when "OVER_QUERY_LIMIT"
+          warn "Geocoding API error: over query limit."
+        when "REQUEST_DENIED"
+          warn "Geocoding API error: request denied."
+        when "INVALID_REQUEST"
+          warn "Geocoding API error: invalid request."
+        end
+      end 
     end
 
     ##
@@ -96,8 +104,13 @@ module Geocoder
         (reverse ? :latlng : :address) => query,
         :sensor => "false"
       }
-      # "http://maps.google.com/maps/api/geocode/json?" + params.to_query
-      "http://www.waze.co.il/WAS/mozi?q=#{CGI::escape query}&token=#{Geocoder::Configuration.waze_api_key}"
+      
+      case @geocoder;
+      when :google
+        "http://maps.google.com/maps/api/geocode/json?" + params.to_query
+      when :waze
+        "http://www.waze.co.il/WAS/mozi?q=#{CGI::escape query}&token=#{Geocoder::Configuration.waze_api_key}"
+      end
     end
   end
 end
