@@ -9,7 +9,8 @@ module Geocoder
     #
     def coordinates(address)
       if (results = search(address)).size > 0
-        place = results.first.geometry['location']
+        #place = results.first.geometry['location']
+        place = results.first["location"]
         ['lat', 'lng'].map{ |i| place[i] }
       end
     end
@@ -18,7 +19,7 @@ module Geocoder
     # Query Google for the address of the given coordinates.
     #
     def address(latitude, longitude)
-      if (results = search(latitude, longitude)).size > 0
+      #if (results = search(latitude, longitude)).size > 0
         results.first.formatted_address
       end
     end
@@ -34,7 +35,8 @@ module Geocoder
       doc = parsed_response(args.join(","), args.size == 2)
       [].tap do |results|
         if doc
-          doc['results'].each{ |r| results << Result.new(r) }
+          #doc['results'].each{ |r| results << Result.new(r) }
+          results << doc
         end
       end
     end
@@ -56,16 +58,17 @@ module Geocoder
           "(see Geocoder::Configuration.timeout to set limit)."
       end
 
-      case doc['status']; when "OK"
+      # case doc['status']; 
+      # when "OK"
         puts "#{doc}"
         doc
-      when "OVER_QUERY_LIMIT"
-        warn "Geocoding API error: over query limit."
-      when "REQUEST_DENIED"
-        warn "Geocoding API error: request denied."
-      when "INVALID_REQUEST"
-        warn "Geocoding API error: invalid request."
-      end
+      # when "OVER_QUERY_LIMIT"
+      #   warn "Geocoding API error: over query limit."
+      # when "REQUEST_DENIED"
+      #   warn "Geocoding API error: request denied."
+      # when "INVALID_REQUEST"
+      #   warn "Geocoding API error: invalid request."
+      # end
     end
 
     ##
