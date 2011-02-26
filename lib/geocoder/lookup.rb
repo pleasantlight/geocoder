@@ -74,21 +74,22 @@ module Geocoder
           "(see Geocoder::Configuration.timeout to set limit)."
       end
 
-      if @geocoder == :waze
-        puts "#{doc}"
-        doc
-      else        
+      if @geocoder == :google
         case doc['status']; 
-        when "OK"
-          doc
         when "OVER_QUERY_LIMIT"
           warn "Geocoding API error: over query limit."
+          doc = nil
         when "REQUEST_DENIED"
           warn "Geocoding API error: request denied."
+          doc = nil
         when "INVALID_REQUEST"
           warn "Geocoding API error: invalid request."
+          doc = nil
         end
-      end 
+      end
+      
+      puts "#{doc}"
+      doc 
     end
 
     ##
