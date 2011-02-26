@@ -35,8 +35,7 @@ module Geocoder
       doc = parsed_response(args.join(","), args.size == 2)
       [].tap do |results|
         if doc
-          # doc['results'].each{ |r| results << Result.new(r) }
-          results << Result.new(doc)
+          doc['results'].each{ |r| results << Result.new(r) }
         end
       end
     end
