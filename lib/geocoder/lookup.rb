@@ -71,7 +71,8 @@ module Geocoder
     #   when "INVALID_REQUEST"
     #     warn "Geocoding API error: invalid request."
     #   end
-    # end
+    
+    end
 
     ##
     # Fetches a raw Google geocoder search result (JSON string).
