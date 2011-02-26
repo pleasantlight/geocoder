@@ -9,8 +9,10 @@ module Geocoder
     #
     def coordinates(address)
       if (results = search(address)).size > 0
-        place = results.first.geometry['location']
+        # place = results.first.geometry['location']
         # ['latitude', 'longitude'].map{ |i| place[i] }
+
+        place = results.first['location']
         ['lat', 'lng'].map{ |i| place[i] }
       end
     end
@@ -35,7 +37,8 @@ module Geocoder
       doc = parsed_response(args.join(","), args.size == 2)
       [].tap do |results|
         if doc
-          doc['results'].each{ |r| results << Result.new(r) }
+          # doc['results'].each{ |r| results << Result.new(r) }
+          results << doc
         end
       end
     end
