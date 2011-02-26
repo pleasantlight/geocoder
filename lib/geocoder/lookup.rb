@@ -8,9 +8,12 @@ module Geocoder
     # Query Google for the coordinates of the given address.
     #
     def coordinates(address, geocoder)
+      puts "geocoder parameter is #{geocoder}"
       @geocoder = geocoder
+      puts "geocoder member is #{@geocoder}"
       if (results = search(address)).size > 0
         if @geocoder == :waze
+          puts "The @geocoder is apparently :waze"
           puts "results = #{results}"
           puts "results.first = #{results.first}"
           puts "results.first['location'] = #{results.first['location']}"
@@ -18,6 +21,7 @@ module Geocoder
           ['lat', 'lon'].map{ |i| place[i] }
         else
           # Google Geocoder
+          puts "The @geocoder is apparently :google"
           puts "found coordinates using Google geocoder"
           place = results.first.geometry['location']
           ['lat', 'lng'].map{ |i| place[i] }
