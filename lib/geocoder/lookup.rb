@@ -12,6 +12,9 @@ module Geocoder
         # place = results.first.geometry['location']
         # ['latitude', 'longitude'].map{ |i| place[i] }
 
+        puts "results = #{results}"
+        puts "results.first = #{results.first}"
+        puts "results.first['location'] = #{results.first['location']}"
         place = results.first['location']
         ['lat', 'lng'].map{ |i| place[i] }
       end
