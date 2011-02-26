@@ -31,6 +31,7 @@ module Geocoder
         def self.geocoded_by(address_attr, options = {})
           _geocoder_init(
             :user_address => address_attr,
+            :geocoder => options[:geocoder] || :google
             :latitude  => options[:latitude]  || :latitude,
             :longitude => options[:longitude] || :longitude
           )
