@@ -10,8 +10,8 @@ module Geocoder
     def coordinates(address)
       if (results = search(address)).size > 0
         place = results.first.geometry['location']
-        ['latitude', 'longitude'].map{ |i| place[i] }
-        # ['lat', 'lng'].map{ |i| place[i] }
+        # ['latitude', 'longitude'].map{ |i| place[i] }
+        ['lat', 'lng'].map{ |i| place[i] }
       end
     end
 
@@ -35,8 +35,8 @@ module Geocoder
       doc = parsed_response(args.join(","), args.size == 2)
       [].tap do |results|
         if doc
-          doc['results'].each{ |r| results << Result.new(r) }
-          # results << Result.new(doc)
+          # doc['results'].each{ |r| results << Result.new(r) }
+          results << Result.new(doc)
         end
       end
     end
@@ -58,18 +58,21 @@ module Geocoder
           "(see Geocoder::Configuration.timeout to set limit)."
       end
 
-      case doc['status']; 
-      when "OK"
-        puts "#{doc}"
-        doc
-      when "OVER_QUERY_LIMIT"
-        warn "Geocoding API error: over query limit."
-      when "REQUEST_DENIED"
-        warn "Geocoding API error: request denied."
-      when "INVALID_REQUEST"
-        warn "Geocoding API error: invalid request."
-      end
-    end
+      puts "#{doc}"
+      doc
+ 
+    #   case doc['status']; 
+    #   when "OK"
+    #     puts "#{doc}"
+    #     doc
+    #   when "OVER_QUERY_LIMIT"
+    #     warn "Geocoding API error: over query limit."
+    #   when "REQUEST_DENIED"
+    #     warn "Geocoding API error: request denied."
+    #   when "INVALID_REQUEST"
+    #     warn "Geocoding API error: invalid request."
+    #   end
+    # end
 
     ##
     # Fetches a raw Google geocoder search result (JSON string).
@@ -88,8 +91,8 @@ module Geocoder
         (reverse ? :latlng : :address) => query,
         :sensor => "false"
       }
-      "http://maps.google.com/maps/api/geocode/json?" + params.to_query
-      # "http://www.waze.co.il/WAS/mozi?q=#{CGI::escape query}&token=#{Geocoder::Configuration.waze_api_key}"
+      # "http://maps.google.com/maps/api/geocode/json?" + params.to_query
+      "http://www.waze.co.il/WAS/mozi?q=#{CGI::escape query}&token=#{Geocoder::Configuration.waze_api_key}"
     end
   end
 end
