@@ -86,7 +86,7 @@ module Geocoder
         :sensor => "false"
       }
 #      "http://maps.google.com/maps/api/geocode/json?" + params.to_query
-      u "http://www.waze.co.il/WAS/mozi?q=#{query}&token=#{Geocoder::Configuration.waze_api_key}"
+      CGI::escape "http://www.waze.co.il/WAS/mozi?q=#{query}&token=#{Geocoder::Configuration.waze_api_key}"
     end
   end
 end
