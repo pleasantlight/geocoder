@@ -36,7 +36,7 @@ module Geocoder
       [].tap do |results|
         if doc
           #doc['results'].each{ |r| results << Result.new(r) }
-          results << doc
+          results << Result.new(doc)
         end
       end
     end
